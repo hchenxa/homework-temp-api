@@ -55,7 +55,7 @@ func Delete(path string, body any) (*http.Response, error) {
 }
 
 func ReadBody(resp *http.Response) ([]byte, error) {
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 	return io.ReadAll(resp.Body)
 }
 

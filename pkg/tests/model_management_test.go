@@ -15,7 +15,7 @@ var _ = Describe("POST /api/show", Label("show", "model-management", "post"), fu
 	It("should return 404 for non-existent model", func() {
 		resp, err := utils.Post("/api/show", utils.ShowRequest{Model: "non-existent-model"})
 		Expect(err).NotTo(HaveOccurred())
-		defer resp.Body.Close()
+		defer func() { _ = resp.Body.Close() }()
 		Expect(resp.StatusCode).To(BeNumerically(">=", 400))
 	})
 
@@ -25,7 +25,7 @@ var _ = Describe("POST /api/show", Label("show", "model-management", "post"), fu
 			Skip("test model is not available on the server")
 		}
 		Expect(err).NotTo(HaveOccurred())
-		defer resp.Body.Close()
+		defer func() { _ = resp.Body.Close() }()
 		Expect(resp.StatusCode).To(Equal(http.StatusOK))
 
 		body, err := utils.ReadBody(resp)
@@ -47,7 +47,7 @@ var _ = Describe("POST /api/pull", Label("pull", "model-management", "post", "re
 	It("should return SSE progress events", func() {
 		resp, err := utils.Post("/api/pull", utils.PullRequest{Model: utils.TestModel()})
 		Expect(err).NotTo(HaveOccurred())
-		defer resp.Body.Close()
+		defer func() { _ = resp.Body.Close() }()
 		Expect(resp.StatusCode).To(Equal(http.StatusOK))
 
 		body, err := utils.ReadBody(resp)
@@ -73,7 +73,7 @@ var _ = Describe("DELETE /api/delete", Label("delete", "model-management", "dele
 		if err != nil {
 			Skip("server is unreachable")
 		}
-		defer resp.Body.Close()
+		defer func() { _ = resp.Body.Close() }()
 		if resp.StatusCode == http.StatusNotFound {
 			Skip("test model is not available on the server, skipping delete test")
 		}
@@ -82,7 +82,7 @@ var _ = Describe("DELETE /api/delete", Label("delete", "model-management", "dele
 	It("should return deleted status", func() {
 		resp, err := utils.Delete("/api/delete", utils.DeleteRequest{Model: utils.TestModel()})
 		Expect(err).NotTo(HaveOccurred())
-		defer resp.Body.Close()
+		defer func() { _ = resp.Body.Close() }()
 
 		body, err := utils.ReadBody(resp)
 		Expect(err).NotTo(HaveOccurred())

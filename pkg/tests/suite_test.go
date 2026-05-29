@@ -17,7 +17,7 @@ func TestPkg(t *testing.T) {
 var _ = BeforeSuite(func() {
 	resp, err := utils.Get("/api/health")
 	Expect(err).NotTo(HaveOccurred(), "API server at %s is unreachable", utils.BaseURL())
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 	Expect(resp.StatusCode).To(Equal(200), "API server at %s returned unexpected status", utils.BaseURL())
 
 	body, err := utils.ReadBody(resp)
